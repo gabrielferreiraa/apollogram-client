@@ -7,13 +7,13 @@
 // GraphQL mutation operation: DeletePostMutation
 // ====================================================
 
-export interface DeletePostMutation_DeletePost {
+export interface DeletePostMutation_deletePost {
   __typename: "Post";
   id: string;
 }
 
 export interface DeletePostMutation {
-  DeletePost: DeletePostMutation_DeletePost | null;
+  deletePost: DeletePostMutation_deletePost | null;
 }
 
 export interface DeletePostMutationVariables {

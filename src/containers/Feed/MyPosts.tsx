@@ -1,15 +1,14 @@
 import React from "react";
-import { useQuery } from "@apollo/client";
 
 import Posts from "./Posts";
-import { GET_LOGGED_USER_POSTS } from "./gql";
-import { GetLoggedUserPostsQuery } from "./__generated__/GetLoggedUserPostsQuery";
+import { GetCurrentUserPosts_posts } from "./__generated__/GetCurrentUserPosts";
 
-const AllPosts: React.FC = () => {
-  const { loading, data } = useQuery<GetLoggedUserPostsQuery>(
-    GET_LOGGED_USER_POSTS
-  );
-  return <Posts data={data?.getLoggedUserPosts} loading={loading} />;
+interface MyPostsProps {
+  data?: GetCurrentUserPosts_posts[];
+  loading: boolean;
+}
+const MyPosts: React.FC<MyPostsProps> = ({ data, loading }) => {
+  return <Posts data={data} loading={loading} />;
 };
 
-export default AllPosts;
+export default MyPosts;

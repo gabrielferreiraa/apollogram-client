@@ -8,61 +8,50 @@ import {
   InputGroup,
   TextArea,
 } from "@blueprintjs/core";
+import { useFormik } from "formik";
 
-import { GET_ALL_POSTS } from "../Feed/gql";
 import { CREATE_POST } from "./gql";
 import {
   CreatePostMutation,
   CreatePostMutationVariables,
 } from "./__generated__/CreatePostMutation";
+import { initialValues, validationSchema } from "./form";
+import { showToast } from "utils/toaster";
 
 type CreatePostModalProps = {
   isOpen: boolean;
-  onClose(): void;
+  handleClose(): void;
 };
 const CreatePostModal: React.FC<CreatePostModalProps> = ({
   isOpen,
-  onClose,
+  handleClose,
 }) => {
-  const [values, setValues] = React.useState({
-    title: "",
-    content: "",
-  });
   const [createPost, { loading }] = useMutation<
     CreatePostMutation,
     CreatePostMutationVariables
-  >(CREATE_POST);
+  >(CREATE_POST, {
+    onCompleted: () => {
+      showToast("Post created successfully", "success");
+      handleClose();
+    },
+  });
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-
-    createPost({
-      variables: {
-        title: values.title,
-        content: values.content,
-      },
-      refetchQueries: [{ query: GET_ALL_POSTS }],
-    });
-    onClose();
-    setValues({ title: "", content: "" });
+  const onSubmit = (values: typeof initialValues) => {
+    createPost({ variables: values });
   };
 
-  const handleChange = React.useCallback(
-    ({ target }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setValues({
-        ...values,
-        [target.name]: target.value,
-      });
-    },
-    [values]
-  );
+  const { values, errors, handleChange, handleBlur, handleSubmit } = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit,
+  });
 
   return (
     <Dialog
       icon="add"
       title="Create Post"
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       canEscapeKeyClose
       canOutsideClickClose
       autoFocus
@@ -71,18 +60,29 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
       <form onSubmit={handleSubmit}>
         <div className={Classes.DIALOG_BODY}>
           <div>
-            <FormGroup label="Title" labelFor="title">
+            <FormGroup
+              label="Title"
+              labelFor="title"
+              helperText={errors.title}
+              intent={!!errors.title ? "danger" : "none"}
+            >
               <InputGroup
                 id="title"
                 name="title"
                 placeholder="Post Title"
                 value={values.title}
                 onChange={handleChange}
+                onBlur={handleBlur}
               />
             </FormGroup>
           </div>
           <div>
-            <FormGroup label="Content" labelFor="content">
+            <FormGroup
+              label="Content"
+              labelFor="content"
+              helperText={errors.content}
+              intent={!!errors.content ? "danger" : "none"}
+            >
               <TextArea
                 id="content"
                 name="content"
@@ -97,7 +97,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
         </div>
         <div className={Classes.DIALOG_FOOTER}>
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-            <Button intent="none" onClick={onClose}>
+            <Button intent="none" onClick={handleClose}>
               Cancel
             </Button>
             <Button type="submit" intent="success" loading={loading}>

@@ -4,10 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetAutenticatedUserQuery
+// GraphQL query operation: GetCurrentUser
 // ====================================================
 
-export interface GetAutenticatedUserQuery_getAutenticatedUser {
+export interface GetCurrentUser_me {
   __typename: "User";
   id: string;
   name: string;
@@ -15,6 +15,6 @@ export interface GetAutenticatedUserQuery_getAutenticatedUser {
   picture: string | null;
 }
 
-export interface GetAutenticatedUserQuery {
-  getAutenticatedUser: GetAutenticatedUserQuery_getAutenticatedUser | null;
+export interface GetCurrentUser {
+  me: GetCurrentUser_me;
 }

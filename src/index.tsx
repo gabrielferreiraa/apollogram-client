@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { ApolloProvider } from "@apollo/client";
+import { QueryClient, QueryClientProvider } from "react-query";
 import "normalize.css/normalize.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
 
@@ -9,12 +10,16 @@ import App from "./App";
 import GlobalStyles from "./styles/GlobalStyles";
 import reportWebVitals from "./reportWebVitals";
 
+const queryClient = new QueryClient();
+
 ReactDOM.render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
-      <GlobalStyles />
-      <App />
-    </ApolloProvider>
+    <QueryClientProvider client={queryClient}>
+      <ApolloProvider client={client}>
+        <GlobalStyles />
+        <App />
+      </ApolloProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

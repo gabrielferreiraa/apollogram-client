@@ -4,10 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: Post
+// GraphQL query operation: GetCurrentUserPosts
 // ====================================================
 
-export interface Post_user {
+export interface GetCurrentUserPosts_posts_user {
   __typename: "User";
   id: string;
   name: string;
@@ -15,10 +15,19 @@ export interface Post_user {
   picture: string | null;
 }
 
-export interface Post {
+export interface GetCurrentUserPosts_posts {
   __typename: "Post";
   id: string;
   title: string;
   content: string;
-  user: Post_user;
+  isOwner: boolean;
+  user: GetCurrentUserPosts_posts_user;
+}
+
+export interface GetCurrentUserPosts {
+  posts: GetCurrentUserPosts_posts[];
+}
+
+export interface GetCurrentUserPostsVariables {
+  user: string;
 }

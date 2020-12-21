@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -6,12 +6,14 @@ import {
   Redirect,
 } from "react-router-dom";
 
-import Header from "./containers/Header";
 import Login from "./containers/Login";
 import Feed from "./containers/Feed";
 import CreatePostModal from "./containers/CreatePostModal";
+import UpdateUserModal from "./containers/UpdateUserModal";
 import CreateUser from "./containers/CreateUser";
 import useAuth from "./hooks/useAuth";
+import Header from "components/Header";
+import { CurrentUserProvider } from "contexts/UserContext";
 
 const PrivateRoutes = ({ children }: any) => {
   const { logged } = useAuth();
@@ -22,27 +24,35 @@ const PrivateRoutes = ({ children }: any) => {
 };
 
 function App() {
-  const [isCreatePostModalOpen, setIsCreatePostModalOpen] = React.useState(
-    false
-  );
+  const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
+  const [isUpdateUserModalOpen, setIsUpdateUserModalOpen] = useState(false);
 
   return (
-    <Router>
-      <Switch>
-        <Route exact path="/" component={Login} />
-        <Route exact path="/create-user" component={CreateUser} />
-        <PrivateRoutes>
-          <Header
-            onOpenCreatePostModal={() => setIsCreatePostModalOpen(true)}
-          />
-          <CreatePostModal
-            isOpen={isCreatePostModalOpen}
-            onClose={() => setIsCreatePostModalOpen(false)}
-          />
-          <Route exact path="/feed" component={Feed} />
-        </PrivateRoutes>
-      </Switch>
-    </Router>
+    <>
+      <Router>
+        <Switch>
+          <Route exact path="/" component={Login} />
+          <Route exact path="/create-user" component={CreateUser} />
+          <PrivateRoutes>
+            <CurrentUserProvider>
+              <CreatePostModal
+                isOpen={isCreatePostModalOpen}
+                handleClose={() => setIsCreatePostModalOpen(false)}
+              />
+              <UpdateUserModal
+                isOpen={isUpdateUserModalOpen}
+                handleClose={() => setIsUpdateUserModalOpen(false)}
+              />
+              <Header
+                onOpenCreatePostModal={() => setIsCreatePostModalOpen(true)}
+                onOpenUpdateUserModal={() => setIsUpdateUserModalOpen(true)}
+              />
+              <Route exact path="/feed" component={Feed} />
+            </CurrentUserProvider>
+          </PrivateRoutes>
+        </Switch>
+      </Router>
+    </>
   );
 }
 

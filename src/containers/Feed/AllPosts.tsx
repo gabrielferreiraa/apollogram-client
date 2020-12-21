@@ -1,13 +1,14 @@
 import React from "react";
-import { useQuery } from "@apollo/client";
 
 import Posts from "./Posts";
-import { GET_ALL_POSTS } from "./gql";
-import { GetAllPostsQuery } from "./__generated__/GetAllPostsQuery";
+import { GetAllPosts_posts } from "./__generated__/GetAllPosts";
 
-const AllPosts: React.FC = () => {
-  const { loading, data } = useQuery<GetAllPostsQuery>(GET_ALL_POSTS);
-  return <Posts data={data?.getAllPosts} loading={loading} />;
+interface AllPostsProps {
+  data?: GetAllPosts_posts[];
+  loading: boolean;
+}
+const AllPosts: React.FC<AllPostsProps> = ({ data, loading }) => {
+  return <Posts data={data} loading={loading} />;
 };
 
 export default AllPosts;

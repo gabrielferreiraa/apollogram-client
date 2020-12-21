@@ -1,9 +1,17 @@
 import React from "react";
+import { useQuery } from "@apollo/client";
 import { Tab } from "@blueprintjs/core";
 
-import { FeedContainer, StyledTabs } from "./Feed.styles";
+import { useCurrentUser } from "contexts/UserContext";
 import AllPosts from "./AllPosts";
 import MyPosts from "./MyPosts";
+import { GetAllPosts } from "./__generated__/GetAllPosts";
+import {
+  GetCurrentUserPosts,
+  GetCurrentUserPostsVariables,
+} from "./__generated__/GetCurrentUserPosts";
+import { GET_ALL_POSTS, GET_CURRENT_USER_POSTS } from "./gql";
+import { FeedContainer, StyledTabs } from "./Feed.styles";
 
 enum Tabs {
   AllPosts = "all-posts",
@@ -12,6 +20,20 @@ enum Tabs {
 
 const Feed: React.FC = () => {
   const [tab, setTab] = React.useState<Tabs>(Tabs.AllPosts);
+  const { me } = useCurrentUser();
+
+  const { data: allPosts, loading: allPostsLoading } = useQuery<GetAllPosts>(
+    GET_ALL_POSTS
+  );
+  const { data: currentUserPosts, loading: currentUserPostsLoading } = useQuery<
+    GetCurrentUserPosts,
+    GetCurrentUserPostsVariables
+  >(GET_CURRENT_USER_POSTS, {
+    skip: !me?.id,
+    variables: {
+      user: me ? me.id : "",
+    },
+  });
 
   return (
     <FeedContainer>
@@ -23,8 +45,21 @@ const Feed: React.FC = () => {
         large
         animate
       >
-        <Tab id={Tabs.AllPosts} title="All Posts" panel={<AllPosts />} />
-        <Tab id={Tabs.MyPosts} title="My Posts" panel={<MyPosts />} />
+        <Tab
+          id={Tabs.AllPosts}
+          title="All Posts"
+          panel={<AllPosts data={allPosts?.posts} loading={allPostsLoading} />}
+        />
+        <Tab
+          id={Tabs.MyPosts}
+          title="My Posts"
+          panel={
+            <MyPosts
+              data={currentUserPosts?.posts}
+              loading={currentUserPostsLoading}
+            />
+          }
+        />
       </StyledTabs>
     </FeedContainer>
   );

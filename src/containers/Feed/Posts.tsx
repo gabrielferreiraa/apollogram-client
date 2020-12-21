@@ -12,18 +12,19 @@ import {
   Position,
 } from "@blueprintjs/core";
 
+import { showToast } from "utils/toaster";
 import NotFound from "./NotFound";
 import { PostUser } from "./Posts.styles";
 import Avatar from "../../components/Avatar";
-import { DELETE_POST, GET_ALL_POSTS, GET_LOGGED_USER_POSTS } from "./gql";
-import { Post } from "../../fragments/__generated__/Post";
+import { DELETE_POST } from "./gql";
+import { PostFields } from "../../fragments/__generated__/PostFields";
 import {
   DeletePostMutation,
   DeletePostMutationVariables,
 } from "./__generated__/DeletePostMutation";
 
 type PostsProps = {
-  data?: Post[] | null;
+  data?: PostFields[] | null;
   loading: boolean;
 };
 const Posts: React.FC<PostsProps> = ({ data, loading = true }) => {
@@ -31,10 +32,9 @@ const Posts: React.FC<PostsProps> = ({ data, loading = true }) => {
     DeletePostMutation,
     DeletePostMutationVariables
   >(DELETE_POST, {
-    refetchQueries: [
-      { query: GET_ALL_POSTS },
-      { query: GET_LOGGED_USER_POSTS },
-    ],
+    onCompleted: () => {
+      showToast("Post deleted successfully", "success");
+    },
   });
 
   if (loading) return <Spinner intent="primary" />;
@@ -42,27 +42,29 @@ const Posts: React.FC<PostsProps> = ({ data, loading = true }) => {
 
   return (
     <ul>
-      {data.map((post: Post) => (
+      {data.map((post: PostFields) => (
         <li key={post.id}>
-          <Card interactive>
-            <Popover
-              content={
-                <Menu>
-                  <MenuItem
-                    icon="trash"
-                    text="Delete"
-                    onClick={() =>
-                      deletePost({
-                        variables: { id: post.id },
-                      })
-                    }
-                  />
-                </Menu>
-              }
-              position={Position.RIGHT}
-            >
-              <Button icon="more" minimal />
-            </Popover>
+          <Card>
+            {post.isOwner && (
+              <Popover
+                content={
+                  <Menu>
+                    <MenuItem
+                      icon="trash"
+                      text="Delete"
+                      onClick={() =>
+                        deletePost({
+                          variables: { id: post.id },
+                        })
+                      }
+                    />
+                  </Menu>
+                }
+                position={Position.RIGHT}
+              >
+                <Button icon="more" minimal />
+              </Popover>
+            )}
             <PostUser>
               <Avatar src={post.user.picture} />
               <Text>

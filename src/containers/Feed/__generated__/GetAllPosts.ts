@@ -4,10 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetAllPostsQuery
+// GraphQL query operation: GetAllPosts
 // ====================================================
 
-export interface GetAllPostsQuery_getAllPosts_user {
+export interface GetAllPosts_posts_user {
   __typename: "User";
   id: string;
   name: string;
@@ -15,14 +15,15 @@ export interface GetAllPostsQuery_getAllPosts_user {
   picture: string | null;
 }
 
-export interface GetAllPostsQuery_getAllPosts {
+export interface GetAllPosts_posts {
   __typename: "Post";
   id: string;
   title: string;
   content: string;
-  user: GetAllPostsQuery_getAllPosts_user;
+  isOwner: boolean;
+  user: GetAllPosts_posts_user;
 }
 
-export interface GetAllPostsQuery {
-  getAllPosts: (GetAllPostsQuery_getAllPosts | null)[];
+export interface GetAllPosts {
+  posts: GetAllPosts_posts[];
 }

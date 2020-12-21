@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const USER_FRAGMENT = gql`
-  fragment User on User {
+  fragment UserFields on User {
     id
     name
     email
@@ -10,13 +10,15 @@ export const USER_FRAGMENT = gql`
 `;
 
 export const POST_FRAGMENT = gql`
-  fragment Post on Post {
+  fragment PostFields on Post {
     id
     title
     content
+    isOwner
     user {
-      ...User
+      ...UserFields
     }
   }
+
   ${USER_FRAGMENT}
 `;

@@ -3,8 +3,9 @@ import { useMutation } from "@apollo/client";
 import { FormGroup, InputGroup, Button } from "@blueprintjs/core";
 import { useHistory } from "react-router-dom";
 
-import { Container } from "./CreateUser.styles";
+import { showToast } from "../../utils/toaster";
 import { CREATE_USER } from "./gql";
+import { Container } from "./CreateUser.styles";
 import {
   CreateUserMutation,
   CreateUserMutationVariables,
@@ -18,14 +19,15 @@ const Login: React.FC = () => {
     password: "",
     picture: "",
   });
-  const [createUser, { data, loading }] = useMutation<
+  const [createUser, { loading }] = useMutation<
     CreateUserMutation,
     CreateUserMutationVariables
-  >(CREATE_USER);
-
-  React.useEffect(() => {
-    if (data?.CreateUser?.id) history.push("/");
-  }, [data, history]);
+  >(CREATE_USER, {
+    onCompleted: () => {
+      showToast("User created successfully", "success");
+      history.push("/");
+    },
+  });
 
   const handleSubmit = (e: any) => {
     e.preventDefault();

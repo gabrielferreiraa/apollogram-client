@@ -7,14 +7,13 @@
 // GraphQL mutation operation: AuthMutation
 // ====================================================
 
-export interface AuthMutation_Auth {
-  __typename: "Auth";
-  token: string | null;
-  error: string | null;
+export interface AuthMutation_auth {
+  __typename: "Token";
+  token: string;
 }
 
 export interface AuthMutation {
-  Auth: AuthMutation_Auth | null;
+  auth: AuthMutation_auth | null;
 }
 
 export interface AuthMutationVariables {

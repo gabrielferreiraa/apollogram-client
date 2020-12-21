@@ -1,30 +1,36 @@
-import React, { ChangeEvent } from "react";
-import { useMutation } from "@apollo/client";
+import React, { useState, ChangeEvent } from "react";
+import { useMutation, useLazyQuery } from "@apollo/client";
 import { FormGroup, InputGroup, Button } from "@blueprintjs/core";
 import { Link } from "react-router-dom";
 
-import useAuth from "../../hooks/useAuth";
-import { LoginContainer } from "./Login.styles";
+import useAuth from "hooks/useAuth";
 import {
   AuthMutation,
   AuthMutationVariables,
 } from "./__generated__/AuthMutation";
+import { GET_CURRENT_USER } from "contexts/UserContext.gql";
 import { AUTH } from "./gql";
+import { LoginContainer } from "./Login.styles";
 
 const Login: React.FC = () => {
-  const [values, setValues] = React.useState({
+  const [values, setValues] = useState({
     email: "",
     password: "",
   });
-  const [login, { data, loading }] = useMutation<
-    AuthMutation,
-    AuthMutationVariables
-  >(AUTH);
-  const { setToken } = useAuth();
 
-  React.useEffect(() => {
-    if (data?.Auth?.token) setToken(data.Auth.token);
-  }, [data, setToken]);
+  const { setToken } = useAuth();
+  const [getCurrentUser] = useLazyQuery(GET_CURRENT_USER);
+
+  const [login, { loading }] = useMutation<AuthMutation, AuthMutationVariables>(
+    AUTH,
+    {
+      onCompleted: ({ auth }) => {
+        if (!auth) return;
+        setToken(auth.token);
+        getCurrentUser();
+      },
+    }
+  );
 
   const handleSubmit = (e: any) => {
     e.preventDefault();

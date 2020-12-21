@@ -2,10 +2,9 @@ module.exports = {
   client: {
     service: {
       name: "timeline-apollo",
-      url: "http://localhost:9000/graphql",
+      url: "http://localhost:4000/graphql",
     },
-    includes: ["src/**/*.{ts,tsx}"],
-    localSchemaFile: "./graphql-schema.json",
+    includes: ["src/**/*.ts"],
     tagName: "gql",
   },
 };

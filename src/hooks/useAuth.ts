@@ -13,7 +13,7 @@ const useAuth = () => {
   };
 
   const logout = () => {
-    client.clearStore();
+    client.resetStore();
     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
     history.push("/");
   };

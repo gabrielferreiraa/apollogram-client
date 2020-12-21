@@ -1,5 +1,4 @@
 import React from "react";
-import { useQuery } from "@apollo/client";
 import {
   Alignment,
   Button,
@@ -13,29 +12,31 @@ import {
   MenuItem,
 } from "@blueprintjs/core";
 
-import useAuth from "../../hooks/useAuth";
-import { GET_AUTENTICATED_USER } from "./gql";
+import useAuth from "hooks/useAuth";
+import Avatar from "components/Avatar";
+import { useCurrentUser } from "contexts/UserContext";
 import { User } from "./Header.styles";
-import Avatar from "../../components/Avatar";
-import { GetAutenticatedUserQuery } from "./__generated__/GetAutenticatedUserQuery";
 
 interface HeaderProps {
   onOpenCreatePostModal(): void;
+  onOpenUpdateUserModal(): void;
 }
-const Header: React.FC<HeaderProps> = ({ onOpenCreatePostModal }) => {
+const Header: React.FC<HeaderProps> = ({
+  onOpenCreatePostModal,
+  onOpenUpdateUserModal,
+}) => {
+  const { me } = useCurrentUser();
   const { logout } = useAuth();
-
-  const { data } = useQuery<GetAutenticatedUserQuery>(GET_AUTENTICATED_USER);
 
   return (
     <header>
       <Navbar>
         <NavbarGroup>
           <User>
-            {data?.getAutenticatedUser && (
+            {me && (
               <>
-                <Avatar src={data.getAutenticatedUser.picture} />
-                <strong>Welcome, {data.getAutenticatedUser.name}</strong>
+                <Avatar src={me.picture} />
+                <strong>Welcome, {me.name}</strong>
               </>
             )}
           </User>
@@ -50,7 +51,11 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreatePostModal }) => {
           <Popover
             content={
               <Menu>
-                <MenuItem icon="edit" text="Edit Profile" />
+                <MenuItem
+                  icon="edit"
+                  text="Edit Profile"
+                  onClick={onOpenUpdateUserModal}
+                />
                 <MenuItem icon="log-out" text="Log out" onClick={logout} />
               </Menu>
             }

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Card as BPCard, Button } from "@blueprintjs/core";
 
 export const PostUser = styled.div`
   display: flex;

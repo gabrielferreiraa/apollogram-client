@@ -4,10 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetLoggedUserPostsQuery
+// GraphQL fragment: PostFields
 // ====================================================
 
-export interface GetLoggedUserPostsQuery_getLoggedUserPosts_user {
+export interface PostFields_user {
   __typename: "User";
   id: string;
   name: string;
@@ -15,14 +15,11 @@ export interface GetLoggedUserPostsQuery_getLoggedUserPosts_user {
   picture: string | null;
 }
 
-export interface GetLoggedUserPostsQuery_getLoggedUserPosts {
+export interface PostFields {
   __typename: "Post";
   id: string;
   title: string;
   content: string;
-  user: GetLoggedUserPostsQuery_getLoggedUserPosts_user;
-}
-
-export interface GetLoggedUserPostsQuery {
-  getLoggedUserPosts: (GetLoggedUserPostsQuery_getLoggedUserPosts | null)[] | null;
+  isOwner: boolean;
+  user: PostFields_user;
 }
